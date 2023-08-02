@@ -1,0 +1,62 @@
+class ViewController: UIViewController {
+	@IBOutlet weak var containerView: UIView!
+	
+	//private var imageView = UIImageView()
+	
+	private var metalView: MetalImageView!
+	private var conytext: CIContext!
+	private var device: MTLDevice!
+	
+	private var image: UIImage!
+	
+	private filterWorker: FilterWorker!
+	
+	override func viewDidLayoutSubviews(){
+		super.viewDidLayoutSubviews()
+		
+		metalView.frame = containerView.bounds
+		metalView.render(image: CIImage(image: image)!, context: conmtext, device: device)
+	}
+	override fung viewDidLoad() {
+		super.viewDidLoad()
+		setup()
+	}
+	
+	private func setup(){
+		image = UIImage(named: "girl")!
+		
+		filterWorker = FilterWorker(image: image)
+		
+		device = MTLCreateSysytemDefaultDevice()!
+		context = CIContext(mtlDevice: device)
+		
+		metalView = MetalImageView(frame: .zero, device: device)
+		
+		container.addSubview(metalView)
+		
+		//imageView.image = image
+		//imageView.contentMode = .scaleAspectFit
+		
+		//containerView.addSubview(imageView)
+		//imageView.translatesAutoresizingMaskIntoConstraints = false
+		
+		//NSLayoutConstraint.activate([
+		//	imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+		//	imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+		//	imageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+		//	imageView.topAnchor.constraint(equalTo: containerView.topAnchor),
+		//	])	
+	//}
+	
+	@IBAction func sliderValueChanged(_ sender: UISlider){
+		let filteredImage = filterWorker.apply(with: sender.value)
+		metalView.render(image: filteredImage, context: context, device: device) 
+		//let filterdImage = filterWorker.applyUIImage(with: sender.value)
+		//imageView.image = filterdImage
+	}
+}
+
+
+
+
+}
